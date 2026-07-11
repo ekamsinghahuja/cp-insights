@@ -12,7 +12,7 @@ export async function GET(request: Request) {
 
   const theme: Theme = getTheme(searchParams.get("theme"));
   const user = await getUserInfo(handle);
-  const svg = renderProfile(user, theme);
+  const svg =  await renderProfile(user, theme);
 
   return new Response(svg, {
         headers: {

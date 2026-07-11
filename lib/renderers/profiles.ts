@@ -1,11 +1,17 @@
 import { CodeforcesUser } from "@/types/codeforces";
 import { getRankColor, getThemeMeta, Theme } from "@/types/color";
 
-export function renderProfile(
+export async function renderProfile(
   user: CodeforcesUser,
   theme: Theme
-): string {
+): Promise<string> {
   const currentTheme = getThemeMeta(theme);
+  const avatar = await fetch(user.avatar!);
+  const buffer = await avatar.arrayBuffer();
+
+  const base64 = Buffer.from(buffer).toString("base64");
+  const avatarData = `data:image/jpeg;base64,${base64}`;
+  console.log(user.avatar);
   return `
 <svg xmlns="http://www.w3.org/2000/svg" width="760" height="250" viewBox="0 0 760 250">
   <rect x="0" y="0" width="760" height="250" fill="${currentTheme.background}" stroke="#30363D" stroke-width="1"/>
@@ -27,7 +33,7 @@ export function renderProfile(
     </clipPath>
   </defs>
 
-  <image href="${user.avatar}" x="530" y="20" width="210" height="210" preserveAspectRatio="xMidYMid slice" clip-path="url(#photo)"/>
+  <image href="${avatarData}" x="530" y="20" width="210" height="210" preserveAspectRatio="xMidYMid slice" clip-path="url(#photo)"/>
   <rect x="530" y="20" width="210" height="210" fill="none" stroke="#30363D" stroke-width="2"/>
 
   <text x="30" y="68" fill="${getRankColor(user.rank, theme)}" font-size="20" font-family="Segoe UI, Arial" font-weight="700">${user.rank ?? "Unrated"}</text>
@@ -38,27 +44,4 @@ export function renderProfile(
   <text x="125" y="213" fill="${currentTheme.text}" font-size="18" font-family="Segoe UI, Arial">(max. <tspan fill="${getRankColor(user.maxRank, theme)}">${user.maxRank ?? "Unrated"}</tspan>, ${user.maxRating ?? "Unrated"})</text>
 </svg>
 `;
-//   return `
-//     <svg xmlns="http://www.w3.org/2000/svg" width="760" height="250" viewBox="0 0 760 250">
-//     <rect x="0" y="0" width="760" height="250" fill="${currentTheme.background}" stroke="#30363D" stroke-width="1"/>
-
-//     <defs>
-//         <clipPath id="photo">
-//         <rect x="530" y="20" width="210" height="210"/>
-//         </clipPath>
-//     </defs>
-
-//     <!-- Codeforces Branding -->
-//     <image href="https://codeforces.org/s/12354/images/codeforces-sponsored-by-ton.png" x="3" y="12" width="180" height="28"/>
-//     <image href="${user.avatar}" x="530" y="20" width="210" height="210" preserveAspectRatio="xMidYMid slice" clip-path="url(#photo)"/>
-//     <rect x="530" y="20" width="210" height="210" fill="none" stroke="#30363D" stroke-width="2"/>
-
-//     <text x="30" y="68" fill="${getRankColor(user.rank)}" font-size="20" font-family="Segoe UI, Arial" font-weight="700">${user.rank ?? "Unrated"}</text>
-//     <text x="30" y="113" fill="${getRankColor(user.rank)}" font-size="42" font-family="Segoe UI, Arial" font-weight="700">${user.handle}</text>
-//     <line x1="30" y1="133" x2="490" y2="133" stroke="#30363D" stroke-width="1"/>
-//     <text x="30" y="168" fill="${currentTheme.text}" font-size="16" font-family="Segoe UI, Arial">Contest Rating</text>
-//     <text x="30" y="213" fill="${getRankColor(user.rank)}" font-size="34" font-family="Segoe UI, Arial" font-weight="700">${user.rating ?? "Unrated"}</text>
-//     <text x="125" y="213" fill="${currentTheme.text}" font-size="18" font-family="Segoe UI, Arial">(max. <tspan fill="${getRankColor(user.maxRank)}">${user.maxRank ?? "Unrated"}</tspan>, ${user.maxRating ?? "Unrated"})</text>
-//     </svg>
-//     `;
 }
