@@ -36,9 +36,11 @@ Generate **Codeforces profile cards**, **activity heatmaps**, **rating graphs**,
 
 # 📸 Preview
 
-<p align="center">
-<img src="https://your-domain.vercel.app/api/profile?handle=makeinverse&theme=dark" width="750"/>
-</p>
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="https://cp-insights-three.vercel.app/api/profile?handle=makeinverse&theme=dark">
+  <source media="(prefers-color-scheme: light)" srcset="https://cp-insights-three.vercel.app/api/profile?handle=makeinverse&theme=light">
+  <img alt="Codeforces Profile" src="https://cp-insights-three.vercel.app/api/profile?handle=makeinverse&theme=dark">
+</picture>
 
 ---
 
