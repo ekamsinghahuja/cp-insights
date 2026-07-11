@@ -1,0 +1,64 @@
+import { CodeforcesUser } from "@/types/codeforces";
+import { getRankColor, getThemeMeta, Theme } from "@/types/color";
+
+export function renderProfile(
+  user: CodeforcesUser,
+  theme: Theme
+): string {
+  const currentTheme = getThemeMeta(theme);
+  return `
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="250" viewBox="0 0 760 250">
+  <rect x="0" y="0" width="760" height="250" fill="${currentTheme.background}" stroke="#30363D" stroke-width="1"/>
+
+  <!-- Codeforces Header -->
+  <g transform="translate(30 10)">
+    <rect x="0" y="10" width="6" height="16" rx="2" fill="#F7C948"/>
+    <rect x="8" y="3" width="6" height="23" rx="2" fill="#3B82F6"/>
+    <rect x="16" y="13" width="6" height="13" rx="2" fill="#D94C4C"/>
+
+    <text x="26" y="25" font-family="Segoe UI, Arial" font-size="18" font-weight="700">
+      <tspan fill="${currentTheme.text}">Code</tspan><tspan fill="#3B82F6">forces</tspan>
+    </text>
+  </g>
+
+  <defs>
+    <clipPath id="photo">
+      <rect x="530" y="20" width="210" height="210"/>
+    </clipPath>
+  </defs>
+
+  <image href="${user.avatar}" x="530" y="20" width="210" height="210" preserveAspectRatio="xMidYMid slice" clip-path="url(#photo)"/>
+  <rect x="530" y="20" width="210" height="210" fill="none" stroke="#30363D" stroke-width="2"/>
+
+  <text x="30" y="68" fill="${getRankColor(user.rank, theme)}" font-size="20" font-family="Segoe UI, Arial" font-weight="700">${user.rank ?? "Unrated"}</text>
+  <text x="30" y="113" fill="${getRankColor(user.rank, theme)}" font-size="42" font-family="Segoe UI, Arial" font-weight="700">${user.handle}</text>
+  <line x1="30" y1="133" x2="490" y2="133" stroke="#30363D" stroke-width="1"/>
+  <text x="30" y="168" fill="${currentTheme.text}" font-size="16" font-family="Segoe UI, Arial">Contest Rating</text>
+  <text x="30" y="213" fill="${getRankColor(user.rank, theme)}" font-size="34" font-family="Segoe UI, Arial" font-weight="700">${user.rating ?? "Unrated"}</text>
+  <text x="125" y="213" fill="${currentTheme.text}" font-size="18" font-family="Segoe UI, Arial">(max. <tspan fill="${getRankColor(user.maxRank, theme)}">${user.maxRank ?? "Unrated"}</tspan>, ${user.maxRating ?? "Unrated"})</text>
+</svg>
+`;
+//   return `
+//     <svg xmlns="http://www.w3.org/2000/svg" width="760" height="250" viewBox="0 0 760 250">
+//     <rect x="0" y="0" width="760" height="250" fill="${currentTheme.background}" stroke="#30363D" stroke-width="1"/>
+
+//     <defs>
+//         <clipPath id="photo">
+//         <rect x="530" y="20" width="210" height="210"/>
+//         </clipPath>
+//     </defs>
+
+//     <!-- Codeforces Branding -->
+//     <image href="https://codeforces.org/s/12354/images/codeforces-sponsored-by-ton.png" x="3" y="12" width="180" height="28"/>
+//     <image href="${user.avatar}" x="530" y="20" width="210" height="210" preserveAspectRatio="xMidYMid slice" clip-path="url(#photo)"/>
+//     <rect x="530" y="20" width="210" height="210" fill="none" stroke="#30363D" stroke-width="2"/>
+
+//     <text x="30" y="68" fill="${getRankColor(user.rank)}" font-size="20" font-family="Segoe UI, Arial" font-weight="700">${user.rank ?? "Unrated"}</text>
+//     <text x="30" y="113" fill="${getRankColor(user.rank)}" font-size="42" font-family="Segoe UI, Arial" font-weight="700">${user.handle}</text>
+//     <line x1="30" y1="133" x2="490" y2="133" stroke="#30363D" stroke-width="1"/>
+//     <text x="30" y="168" fill="${currentTheme.text}" font-size="16" font-family="Segoe UI, Arial">Contest Rating</text>
+//     <text x="30" y="213" fill="${getRankColor(user.rank)}" font-size="34" font-family="Segoe UI, Arial" font-weight="700">${user.rating ?? "Unrated"}</text>
+//     <text x="125" y="213" fill="${currentTheme.text}" font-size="18" font-family="Segoe UI, Arial">(max. <tspan fill="${getRankColor(user.maxRank)}">${user.maxRank ?? "Unrated"}</tspan>, ${user.maxRating ?? "Unrated"})</text>
+//     </svg>
+//     `;
+}
