@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚀 CP Insights
+# 🚀 CP Insights (Codeforces Analytics on Readme)
 
 Beautiful, dynamic GitHub widgets for Competitive Programmers.
 
