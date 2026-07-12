@@ -1,14 +1,14 @@
-import { HEATMAP_WIDGET } from "@/types/analytics";
+import { HEATMAP_WIDGET, PROBLEM_BAR_GRAPH_WIDGET } from "@/types/analytics";
 import { CodeforcesUser } from "@/types/codeforces";
 import { getRankColor, getThemeMeta, Theme } from "@/types/color";
 
 const HEAT_MAP_HEIGHT = 145;
+const PROBLEM_BAR_GRAPH_HEIGHT = 300;
 
 export async function renderProfile(
   user: CodeforcesUser,
   theme: Theme, 
-  widgets: string[] = [],
-  widgetNames: string[] = []
+  widgets: Map<string, string>,
 ): Promise<string> {
   const currentTheme = getThemeMeta(theme);
   const avatar = await fetch(user.avatar!);
@@ -19,13 +19,22 @@ export async function renderProfile(
 
   let height = 250;
   let heatmapWidget : string = "";
-  if (widgetNames.includes(HEATMAP_WIDGET)) {
+  let problemBarGraphWidget : string = "";
+
+  let optionalY = 233;
+  if (widgets.has(HEATMAP_WIDGET)) {
     height += HEAT_MAP_HEIGHT;
-    heatmapWidget = getHeatMapWidget(widgets[0], currentTheme);
+    heatmapWidget = getHeatMapWidget(widgets.get(HEATMAP_WIDGET)!, currentTheme, optionalY);
+    optionalY += 173;
+  }
+
+  if (widgets.has(PROBLEM_BAR_GRAPH_WIDGET)) {
+    height += PROBLEM_BAR_GRAPH_HEIGHT;
+    problemBarGraphWidget = getBarGraphWidget(widgets.get(PROBLEM_BAR_GRAPH_WIDGET)!, currentTheme, optionalY);
   }
 
   return `
-    <svg xmlns="http://www.w3.org/2000/svg" width="780" height="${height}" viewBox="0 0 780 ${height}">
+    <svg xmlns="http://www.w3.org/2000/svg" width="${height}" height="${height}" viewBox="0 0 780 ${height}">
     <rect x="0" y="0" width="780" height="${height}" fill="${currentTheme.background}" stroke="#30363D" stroke-width="1"/>
 
     <!-- Codeforces Header -->
@@ -67,17 +76,32 @@ export async function renderProfile(
     <text x="30" y="213" fill="${getRankColor(user.rank, theme)}" font-size="34" font-family="Segoe UI, Arial" font-weight="700">${user.rating ?? "Unrated"}</text>
     <text x="125" y="213" fill="${currentTheme.text}" font-size="18" font-family="Segoe UI, Arial">(max. <tspan fill="${getRankColor(user.maxRank, theme)}">${user.maxRank ?? "Unrated"}</tspan>, ${user.maxRating ?? "Unrated"})</text>
     ${heatmapWidget}
-    </svg>
-`;
+    ${problemBarGraphWidget}
+    </svg>`;
 }
 
-const getHeatMapWidget = (widget: string, currentTheme: any): string => {
+const getHeatMapWidget = (widget: string, currentTheme: any, y: number): string => { // 96 height
 
-  return `<line x1="30" y1="233" x2="490" y2="233" stroke="#30363D" stroke-width="1"/>
-    <text x="30" y="268" fill="${currentTheme.text}" font-size="12" font-family="Segoe UI, Arial">Heatmap (last 52 weeks)</text>
-    <g transform="translate(30, 280)">
-        <animate attributeName="opacity" from="0" to="1" begin="0s" dur="0.8s" fill="freeze"/>
-        <animateTransform attributeName="transform" type="scale" from="0.95" to="1" begin="0s" dur="0.8s" additive="sum" fill="freeze"/>
-        ${widget}
-    </g>`;
+    let textY = y + 35;
+    let graphY = textY + 12;
+    return `<line x1="30" y1="${y}" x2="490" y2="${y}" stroke="#30363D" stroke-width="1"/>
+        <text x="30" y="${textY}" fill="${currentTheme.text}" font-size="12" font-family="Segoe UI, Arial">Heatmap (last 52 weeks)</text>
+        <g transform="translate(30, ${graphY})">
+            <animate attributeName="opacity" from="0" to="1" begin="0s" dur="0.8s" fill="freeze"/>
+            <animateTransform attributeName="transform" type="scale" from="0.95" to="1" begin="0s" dur="0.8s" additive="sum" fill="freeze"/>
+            ${widget}
+        </g>`;
+}
+
+const getBarGraphWidget = (widget: string, currentTheme: any, y: number): string => {
+
+    let textY = y + 35;
+    let graphY = textY + 125;
+    return `<line x1="30" y1="${y}" x2="490" y2="${y}" stroke="#30363D" stroke-width="1"/>
+        <text x="30" y="${textY}" fill="${currentTheme.text}" font-size="12" font-family="Segoe UI, Arial">Problems Solved by Rating</text>
+        <g transform="translate(30, ${graphY})">
+            <animate attributeName="opacity" from="0" to="1" begin="0s" dur="0.8s" fill="freeze"/>
+            <animateTransform attributeName="transform" type="scale" from="0.95" to="1" begin="0s" dur="0.8s" additive="sum" fill="freeze"/>
+            ${widget}
+        </g>`;
 }

@@ -51,3 +51,24 @@ const DARK_RANK_COLORS: Record<string, string> = {
     "international grandmaster": "#FF4D4D",
     "legendary grandmaster": "#FF2D55",
 };
+
+export function getRatingColor(
+    rating?: number,
+    theme: Theme = "dark"
+): string {
+    if (rating == null) {
+        return theme === "dark" ? "#F0F6FC" : "#24292F";
+    }
+
+    if (rating < 1200) return getRankColor("newbie", theme);
+    if (rating < 1400) return getRankColor("pupil", theme);
+    if (rating < 1600) return getRankColor("specialist", theme);
+    if (rating < 1900) return getRankColor("expert", theme);
+    if (rating < 2100) return getRankColor("candidate master", theme);
+    if (rating < 2300) return getRankColor("master", theme);
+    if (rating < 2400) return getRankColor("international master", theme);
+    if (rating < 2600) return getRankColor("grandmaster", theme);
+    if (rating < 3000) return getRankColor("international grandmaster", theme);
+
+    return getRankColor("legendary grandmaster", theme);
+}

@@ -46,7 +46,6 @@ export async function getUserSubmissions(
   if (data.status !== "OK") {
     throw new Error(data.comment);
   }
-  console.log(JSON.stringify(data.result[0], null, 2));
 
   return data.result;
 }

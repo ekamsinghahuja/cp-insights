@@ -14,3 +14,4 @@ export interface ProblemData {
 }
 
 export const HEATMAP_WIDGET = "heatmap";
+export const PROBLEM_BAR_GRAPH_WIDGET = "problem-bar-graph";

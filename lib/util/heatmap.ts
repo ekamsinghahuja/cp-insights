@@ -36,3 +36,20 @@ function getEmptyHeatmapDay(): Map<string, number> {
     return activity;
 }
 
+export function buildProblemBarGraph(submissions: SubmissionData[]): Map<number, number> { 
+    const problemSolvedToRating = new Map<number, number>();
+    const solvedSet = new Set<string>();
+    for (const submission of submissions) {
+        if (submission.verdict === "OK" && !solvedSet.has(submission.problem.contestId + submission.problem.index)) {
+            solvedSet.add(submission.problem.contestId + submission.problem.index);
+            problemSolvedToRating.set(submission.problem.rating ?? 0, (problemSolvedToRating.get(submission.problem.rating ?? 0) ?? 0) + 1);
+        }
+    }
+
+    const sortedCropedMap = new Map<number, number>();
+    for (let i = 800; i <= 3400; i += 100) {
+        sortedCropedMap.set(i, problemSolvedToRating.get(i) ?? 0);
+    }
+
+    return sortedCropedMap;
+}
