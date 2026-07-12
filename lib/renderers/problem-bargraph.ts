@@ -25,8 +25,7 @@ export function renderProblemBarGraph(
 
         const height = (solved / maxSolved) * maxBarHeight;
 
-        svg += `
-        <rect x="${x}" y="${90 - height}" width="${barWidth}" height="${height}" rx="2" fill="${getRatingColor(rating, theme)}"/>
+        svg += `<rect x="${x}" y="${90 - height}" width="${barWidth}" height="${height}" rx="2" fill="${getRatingColor(rating, theme)}"/>
         <text x="${x + barWidth / 2}" y="105" text-anchor="middle" fill="${currentTheme.text}" font-size="10" font-family="Segoe UI, Arial">
             ${rating}
         </text>

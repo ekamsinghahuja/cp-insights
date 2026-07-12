@@ -31,20 +31,9 @@ export function renderHeatmap(
     let day = 0;
 
     for (const [date, count] of data) {
-        svg += `
-        <rect
-            x="${x}"
-            y="${y}"
-            width="12"
-            height="12"
-            rx="2"
-            fill="${getHeatmapColor(count, theme)}"
-        />
-        `;
-
+        svg += `<rect x="${x}" y="${y}" width="12" height="12" rx="2" fill="${getHeatmapColor(count, theme)}"/>`;
         day++;
         y += 13.7;
-
         if (day === 7) {
             day = 0;
             y = 0;
