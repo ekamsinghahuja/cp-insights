@@ -1,7 +1,7 @@
-import { CodeforcesUser } from "@/types/codeforces";
+import { CodeforcesSubmission, CodeforcesUser } from "@/types/codeforces";
 
 export async function getUserInfo(handle: string) : Promise<CodeforcesUser> {
-  const response = await fetch(
+  const userHandle = await fetch(
     `https://codeforces.com/api/user.info?handles=${handle}`,
     {
       next: {
@@ -10,11 +10,11 @@ export async function getUserInfo(handle: string) : Promise<CodeforcesUser> {
     }
   );
 
-  if (!response.ok) {
+  if (!userHandle.ok) {
     throw new Error("Failed to fetch Codeforces data");
   }
 
-  const data = await response.json();
+  const data = await userHandle.json();
 
   if (data.status !== "OK") {
     throw new Error(data.comment);
@@ -28,4 +28,25 @@ export async function getUserInfo(handle: string) : Promise<CodeforcesUser> {
     maxRank: data.result[0].maxRank,
     avatar: data.result[0].avatar,
   }
+}
+
+export async function getUserSubmissions(
+  handle: string
+): Promise<CodeforcesSubmission[]> {
+  const response = await fetch(
+    `https://codeforces.com/api/user.status?handle=${handle}`
+  );
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch Codeforces submission data");
+  }
+
+  const data = await response.json();
+
+  if (data.status !== "OK") {
+    throw new Error(data.comment);
+  }
+  console.log(JSON.stringify(data.result[0], null, 2));
+
+  return data.result;
 }
