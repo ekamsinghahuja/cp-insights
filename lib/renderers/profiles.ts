@@ -45,12 +45,24 @@ export async function renderProfile(
         </clipPath>
     </defs>
 
-    <image href="${avatarData}" x="530" y="20" width="210" height="210" preserveAspectRatio="xMidYMid slice" clip-path="url(#photo)"/>
+   <g opacity="0">
+   <animate attributeName="opacity" from="0" to="1" dur="0.5s" fill="freeze"/>
+
+   <image href="${avatarData}" x="530" y="20" width="210" height="210"
+        preserveAspectRatio="xMidYMid slice"
+        clip-path="url(#photo)"/>
+    </g>
+
     <rect x="530" y="20" width="210" height="210" fill="none" stroke="#30363D" stroke-width="2"/>
 
     <text x="30" y="68" fill="${getRankColor(user.rank, theme)}" font-size="20" font-family="Segoe UI, Arial" font-weight="700">${user.rank ?? "Unrated"}</text>
-    <text x="30" y="113" fill="${getRankColor(user.rank, theme)}" font-size="42" font-family="Segoe UI, Arial" font-weight="700">${user.handle}</text>
-    <line x1="30" y1="133" x2="490" y2="133" stroke="#30363D" stroke-width="1"/>
+    
+    <text x="30" y="113" fill="${getRankColor(user.rank, theme)}" font-size="42" font-family="Segoe UI, Arial" font-weight="700" opacity="0">
+        <animate attributeName="opacity" from="0" to="1" begin="0.3s" dur="0.5s" fill="freeze"/>
+        <animateTransform attributeName="transform" type="translate" from="-20 0" to="0 0" begin="0.3s" dur="0.5s" fill="freeze"/>
+        ${user.handle}
+    </text>
+
     <text x="30" y="168" fill="${currentTheme.text}" font-size="16" font-family="Segoe UI, Arial">Contest Rating</text>
     <text x="30" y="213" fill="${getRankColor(user.rank, theme)}" font-size="34" font-family="Segoe UI, Arial" font-weight="700">${user.rating ?? "Unrated"}</text>
     <text x="125" y="213" fill="${currentTheme.text}" font-size="18" font-family="Segoe UI, Arial">(max. <tspan fill="${getRankColor(user.maxRank, theme)}">${user.maxRank ?? "Unrated"}</tspan>, ${user.maxRating ?? "Unrated"})</text>
@@ -64,6 +76,8 @@ const getHeatMapWidget = (widget: string, currentTheme: any): string => {
   return `<line x1="30" y1="233" x2="490" y2="233" stroke="#30363D" stroke-width="1"/>
     <text x="30" y="268" fill="${currentTheme.text}" font-size="12" font-family="Segoe UI, Arial">Heatmap (last 52 weeks)</text>
     <g transform="translate(30, 280)">
+        <animate attributeName="opacity" from="0" to="1" begin="0s" dur="0.8s" fill="freeze"/>
+        <animateTransform attributeName="transform" type="scale" from="0.95" to="1" begin="0s" dur="0.8s" additive="sum" fill="freeze"/>
         ${widget}
     </g>`;
 }
