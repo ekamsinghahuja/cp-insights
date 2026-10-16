@@ -1,13 +1,13 @@
 import { CodeforcesSubmission, CodeforcesUser } from "@/types/codeforces";
 
-export async function getUserInfo(handle: string) : Promise<CodeforcesUser> {
+export async function getUserInfo(handle: string): Promise<CodeforcesUser> {
   const userHandle = await fetch(
     `https://codeforces.com/api/user.info?handles=${handle}`,
     {
       next: {
         revalidate: 60 * 60, // We'll discuss this later
       },
-    }
+    },
   );
 
   if (!userHandle.ok) {
@@ -26,15 +26,16 @@ export async function getUserInfo(handle: string) : Promise<CodeforcesUser> {
     maxRating: data.result[0].maxRating,
     rank: data.result[0].rank,
     maxRank: data.result[0].maxRank,
-    avatar: data.result[0].avatar,
-  }
+    avatar: data.result[0].avatar ?? "",
+    titlePhoto: data.result[0].titlePhoto ?? "",
+  };
 }
 
 export async function getUserSubmissions(
-  handle: string
+  handle: string,
 ): Promise<CodeforcesSubmission[]> {
   const response = await fetch(
-    `https://codeforces.com/api/user.status?handle=${handle}`
+    `https://codeforces.com/api/user.status?handle=${handle}`,
   );
 
   if (!response.ok) {
