@@ -7,30 +7,40 @@ const PROBLEM_BAR_GRAPH_HEIGHT = 300;
 
 export async function renderProfile(
   user: CodeforcesUser,
-  theme: Theme, 
+  theme: Theme,
   widgets: Map<string, string>,
 ): Promise<string> {
   const currentTheme = getThemeMeta(theme);
-  const avatar = await fetch(user.avatar!);
-  const buffer = await avatar.arrayBuffer();
+  const titlePhotoUrl =
+    "https://codeforces.com/" + user.titlePhoto!.replace("https://", "");
+  const titlePhoto = await fetch(titlePhotoUrl);
+  const buffer = await titlePhoto.arrayBuffer();
 
   const base64 = Buffer.from(buffer).toString("base64");
   const avatarData = `data:image/jpeg;base64,${base64}`;
 
   let height = 250;
-  let heatmapWidget : string = "";
-  let problemBarGraphWidget : string = "";
+  let heatmapWidget: string = "";
+  let problemBarGraphWidget: string = "";
 
   let optionalY = 233;
   if (widgets.has(HEATMAP_WIDGET)) {
     height += HEAT_MAP_HEIGHT;
-    heatmapWidget = getHeatMapWidget(widgets.get(HEATMAP_WIDGET)!, currentTheme, optionalY);
+    heatmapWidget = getHeatMapWidget(
+      widgets.get(HEATMAP_WIDGET)!,
+      currentTheme,
+      optionalY,
+    );
     optionalY += 173;
   }
 
   if (widgets.has(PROBLEM_BAR_GRAPH_WIDGET)) {
     height += PROBLEM_BAR_GRAPH_HEIGHT;
-    problemBarGraphWidget = getBarGraphWidget(widgets.get(PROBLEM_BAR_GRAPH_WIDGET)!, currentTheme, optionalY);
+    problemBarGraphWidget = getBarGraphWidget(
+      widgets.get(PROBLEM_BAR_GRAPH_WIDGET)!,
+      currentTheme,
+      optionalY,
+    );
   }
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="780" height="${height}" viewBox="0 0 780 ${height}">
@@ -71,28 +81,36 @@ export async function renderProfile(
     </svg>`;
 }
 
-const getHeatMapWidget = (widget: string, currentTheme: any, y: number): string => { // 96 height
+const getHeatMapWidget = (
+  widget: string,
+  currentTheme: any,
+  y: number,
+): string => {
+  // 96 height
 
-    let textY = y + 35;
-    let graphY = textY + 12;
-    return `<line x1="30" y1="${y}" x2="490" y2="${y}" stroke="#30363D" stroke-width="1"/>
+  let textY = y + 35;
+  let graphY = textY + 12;
+  return `<line x1="30" y1="${y}" x2="490" y2="${y}" stroke="#30363D" stroke-width="1"/>
         <text x="30" y="${textY}" fill="${currentTheme.text}" font-size="12" font-family="Segoe UI, Arial">Heatmap (last 52 weeks)</text>
         <g transform="translate(30, ${graphY})">
             <animate attributeName="opacity" from="0" to="1" begin="0s" dur="0.8s" fill="freeze"/>
             <animateTransform attributeName="transform" type="scale" from="0.95" to="1" begin="0s" dur="0.8s" additive="sum" fill="freeze"/>
             ${widget}
         </g>`;
-}
+};
 
-const getBarGraphWidget = (widget: string, currentTheme: any, y: number): string => {
-
-    let textY = y + 35;
-    let graphY = textY + 125;
-    return `<line x1="30" y1="${y}" x2="490" y2="${y}" stroke="#30363D" stroke-width="1"/>
+const getBarGraphWidget = (
+  widget: string,
+  currentTheme: any,
+  y: number,
+): string => {
+  let textY = y + 35;
+  let graphY = textY + 125;
+  return `<line x1="30" y1="${y}" x2="490" y2="${y}" stroke="#30363D" stroke-width="1"/>
         <text x="30" y="${textY}" fill="${currentTheme.text}" font-size="12" font-family="Segoe UI, Arial">Problems Solved by Rating</text>
         <g transform="translate(30, ${graphY})">
             <animate attributeName="opacity" from="0" to="1" begin="0s" dur="0.8s" fill="freeze"/>
             <animateTransform attributeName="transform" type="scale" from="0.95" to="1" begin="0s" dur="0.8s" additive="sum" fill="freeze"/>
             ${widget}
         </g>`;
-}
+};

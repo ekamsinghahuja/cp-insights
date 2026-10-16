@@ -21,7 +21,7 @@ export async function GET(request: Request) {
   const theme: Theme = getTheme(searchParams.get("theme"));
   const showHeatmap = getBoolean(searchParams.get("heatmap"));
   const problemBarGraph = getBoolean(searchParams.get("problemBarGraph"));
-  
+
   const user = await getUserData(handle);
   const submissions = await getSubmissionData(handle);
 
@@ -39,22 +39,25 @@ export async function GET(request: Request) {
 
   if (problemBarGraph) {
     const mappedProblemData = buildProblemBarGraph(mappedSubmissions!);
-    const problemsBarGraphWidget = renderProblemBarGraph(mappedProblemData, theme);
+    const problemsBarGraphWidget = renderProblemBarGraph(
+      mappedProblemData,
+      theme,
+    );
     optionalWidgets.set(PROBLEM_BAR_GRAPH_WIDGET, problemsBarGraphWidget);
   }
-  
-  const svg =  await renderProfile(user, theme, optionalWidgets);
+
+  const svg = await renderProfile(user, theme, optionalWidgets);
 
   return new Response(svg, {
-        headers: {
-            "Content-Type": "image/svg+xml",
-        },
-    });
+    headers: {
+      "Content-Type": "image/svg+xml",
+    },
+  });
 }
 
-async function getUserData(handle :string): Promise<CodeforcesUser> {
+async function getUserData(handle: string): Promise<CodeforcesUser> {
   const userKey = CacheKey.user(handle);
-  let user : CodeforcesUser | null = await getCache(userKey);
+  let user: CodeforcesUser | null = await getCache(userKey);
   if (!user) {
     user = await getUserInfo(handle);
     await setCache(userKey, user);
@@ -62,9 +65,12 @@ async function getUserData(handle :string): Promise<CodeforcesUser> {
   return user;
 }
 
-async function getSubmissionData(handle :string): Promise<CodeforcesSubmission[]> {
+async function getSubmissionData(
+  handle: string,
+): Promise<CodeforcesSubmission[]> {
   const submissionsKey = CacheKey.submissions(handle);
-  let submissions:CodeforcesSubmission[] | null = await getCache(submissionsKey);
+  let submissions: CodeforcesSubmission[] | null =
+    await getCache(submissionsKey);
   if (!submissions) {
     submissions = await getUserSubmissions(handle);
     await setCache(submissionsKey, submissions);
